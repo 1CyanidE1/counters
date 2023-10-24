@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select a Hero</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#hero_id').select2();
+        });
+    </script>
+    <style>
+        select {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select a Hero to Find Counter Picks</h1>
+
+    <form action="{% url 'counter_picks' %}" method="get">
+        <select name="hero_id" id="hero_id" onchange="this.form.submit()">
+            <option value="" disabled selected>--Select a Hero--</option>
+            {% for hero in all_heroes %}
+            <option value="{{ hero.id }}">{{ hero.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if counter_picks %}
+    <h1>Counter Picks for {{ selected_hero.name }}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Counter Hero</th>
+                <th>Counter Rank</th>
+                <th>Hero Rank in Patch</th>
+                <th>Combined Rank</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for counter in counter_picks %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ counter.counter_hero.name }}</td>
+                <td>{{ counter.counter_rank }}</td>
+                <td>{{ counter.hero_rank_in_patch }}</td>
+                <td>{{ counter.combined_rank }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</body>
+</html>
